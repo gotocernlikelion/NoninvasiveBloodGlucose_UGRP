@@ -1,9 +1,18 @@
-clear,clc;
+clear;
+clc;
 
 % raw_data 
-x1 = linspace(0,10,500);
-raw_data = sin(x1) + 0.5*sin(10*x1)+0.8*rand(1,length(x1));
-
+% x1 = linspace(0,10,500);
+% raw_data = sin(x1) + 0.5*sin(10*x1)+0.8*rand(1,length(x1));
+% figure
+% plot(raw_data)
+file=uigetfile('*.mat');
+load(file)
+if contains(file,'BFIdata.mat') 
+    raw_data=meanBFI(:);
+else
+    raw_data=meanPPG(:);
+end
 % initialization
 data_buffer=[0,0,0,0,0];
 T_amp=[0.0,1.0];
@@ -17,7 +26,7 @@ filtered = [];
 
 % noise ppg generation 관련 parameters
 num_iteration = 0;
-max_iteration = 500;
+max_iteration = 3600;
 
 % tolerance list 
 tol = [ 0.95, 0.9, 1.2,1.2];
@@ -33,7 +42,7 @@ while num_iteration < max_iteration
     grad=least_sq(data_buffer);
     num_iteration = num_iteration+1;
 %     fprintf("grad : %f, current_grad: %f\n", grad, current_grad)
-    if grad<0 && current_grad>=0 && trough_found % found peak
+    if (grad<0 && current_grad>=0) && trough_found % found peak
         amp=x-prev_trough;
         if T_amp(1) < amp && T_amp(2) > amp 
             T_amp = [(tol(1)*T_amp(1)+amp*tol(2))/2, (tol(3)*T_amp(2)+amp*tol(4))/2];
@@ -48,7 +57,7 @@ while num_iteration < max_iteration
             fprintf("T_amp size is not good , %d\n", num_iteration)
         end
 
-    elseif grad>0 && current_grad<=0 && peak_found% found trough
+     elseif (grad>0 && current_grad<=0) %&& peak_found% found trough
         amp=abs(x - prev_peak);
         if T_amp(1) < amp && T_amp(2) > amp 
             T_amp = [(tol(1)*T_amp(1)+amp*tol(2))/2, (tol(3)*T_amp(2)+amp*tol(4))/2];
@@ -73,6 +82,7 @@ while num_iteration < max_iteration
 end
 
 %plot filtered data and rawdata  
+figure
 plot(filtered)
 % hold on 
 % plot(raw_data)

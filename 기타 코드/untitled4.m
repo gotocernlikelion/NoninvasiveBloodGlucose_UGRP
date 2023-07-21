@@ -1,0 +1,3 @@
+myFun();
+myFun();
+clear;
