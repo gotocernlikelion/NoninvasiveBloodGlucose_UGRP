@@ -200,7 +200,8 @@ classdef File
                     samp_img2 = img2(y1:y2,x1:x2); % background subtrated data
                                 
                     sum_intensity = sum(img_array{i}(:,:,j),'all');
-                    PPG_box = -log(sum_intensity); 
+                    %PPG_box = -log(sum_intensity);
+                    PPG_box = sum_intensity;
         
                     temp = im2col(samp_img2,[7 7],'distinct');
                     MEAN = mean(temp);
