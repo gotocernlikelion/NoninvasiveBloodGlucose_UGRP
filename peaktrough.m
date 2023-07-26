@@ -1,9 +1,12 @@
 
 clear;
 clc;
-
-file=uigetfile('*.mat');
+origin=pwd;
+[file,path]=uigetfile('*.mat');
+cd(path)
 load(file)
+cd(pwd)
+
 
 if contains(file,'BFIdata.mat') 
     raw_data=meanBFI(:);
