@@ -349,7 +349,7 @@ classdef File
             close(h4)
             close(h2)
             close(h0) 
-            cd ..
+            cd()
         end
     
         function PlotGraph()

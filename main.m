@@ -1,7 +1,8 @@
 function main()
-    try
 
         %데이터 탐색 & 경로추가
+        currentFolder=pwd; %현재 폴더 위치 파악
+        cd(".\Data\") % data 폴더 접근
         MyData=dir('*-*-*'); 
             
         if isempty(MyData) 
@@ -12,11 +13,12 @@ function main()
                 addpath(MyData(i).name);
             end
         end
-        
+
+        cd(currentFolder)
         if exist("function\")
             addpath("function\");
         end
-    
+
         while true
     
             %메모리 삭제
@@ -44,7 +46,4 @@ function main()
     
         %메모리 삭제
         clear, clc;
-    catch
-        fprintf("unexpected errer \n");
-    end
 end

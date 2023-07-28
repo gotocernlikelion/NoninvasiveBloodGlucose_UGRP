@@ -7,19 +7,18 @@ cd(path)
 load(file)
 cd(pwd)
 
-
 if contains(file,'BFIdata.mat') 
     raw_data=meanBFI(:);
 %     filtraw_data=smoothdata(raw_data,'movmean',100);
 %     raw_data=raw_data-filtraw_data;
-    raw_data = exp(-1*raw_data);
-    raw_data=smoothdata(raw_data,'sgolay',5);
+%     raw_data = exp(-1*raw_data);
+    raw_data=smoothdata(raw_data,'movmean',5);
 else
     raw_data=meanPPG(:);
 %     filtraw_data=smoothdata(raw_data,'movmean',100);
 %     raw_data=raw_data-filtraw_data;
-    raw_data = exp(-1*raw_data);
-    raw_data=smoothdata(raw_data,'sgolay',5);
+%     raw_data = exp(-1*raw_data);
+    raw_data=smoothdata(raw_data,'movmean',5);
 end
 
 num=60;
