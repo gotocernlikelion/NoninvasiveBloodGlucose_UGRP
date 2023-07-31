@@ -189,57 +189,55 @@
     hold on
 
     maxPlot = 10;
-
-    for j = 1:totalframe
-        test_img = snapshot(g);
-        while 1      % wait until img is read from the camera
-            if ~isempty(test_img)
-                break
-            else
-                continue
+        for j = 1:totalframe
+            SnapShot(i).test_img = snapshot(g(i));
+            while 1      % wait until img is read from the camera
+                if ~isempty(SnapShot(i).test_img)
+                    break
+                else
+                    continue
+                end
             end
-        end
-        img = cast(test_img,'double'); % change data type because img of initial condiditon is uint16
-        img2 = img - background_array; % - let's bypass bg subtraction for now
-
-        for i = 1:ch_len    % BFI calculation for selected channels
-            
-            hold on
-
-            y1 = pixel_location(2,ch_num(i));
-            y2 = pixel_location(2,ch_num(i)) + 20;
-            x1 = pixel_location(1,ch_num(i));
-            x2 = pixel_location(1,ch_num(i)) + 20;
-            img_array{i}(:,:,j) = img(y1:y2,x1:x2); % raw data
-            samp_img2 = img2(y1:y2,x1:x2); % background subtrated data
-                        
-            sum_intensity = sum(img_array{i}(:,:,j),'all');
-            %PPG_box = -log(sum_intensity);
-            PPG_box = sum_intensity;
-
-            temp = im2col(samp_img2,[7 7],'distinct');
-            MEAN = mean(temp);
-            STD = std(temp,1);
-            K = STD./MEAN;
-            BFI_box = (1./K.^2)'; % 9x1 column vector 
-            % didn't work when 1/K'.^2 was used (figure out later)
+            img = cast(SnapShot(i).test_img,'double'); % change data type because img of initial condiditon is uint16
+            img2 = img - background_array; % - let's bypass bg subtraction for now
     
-            BFI_box_mean = mean(BFI_box);
-            BFI_box_std = std(BFI_box);
-
+            for i = 1:ch_len    % BFI calculation for selected channels
+                
+                hold on
     
-            final_BFI(i,j) = BFI_box_mean;
-            final_BFI_std(i,j)= BFI_box_std;
-            final_PPG(i,j) = PPG_box;
+                y1 = pixel_location(2,ch_num(i));
+                y2 = pixel_location(2,ch_num(i)) + 20;
+                x1 = pixel_location(1,ch_num(i));
+                x2 = pixel_location(1,ch_num(i)) + 20;
+                img_array{i}(:,:,j) = img(y1:y2,x1:x2); % raw data
+                samp_img2 = img2(y1:y2,x1:x2); % background subtrated data
+                            
+                sum_intensity = sum(img_array{i}(:,:,j),'all');
+                %PPG_box = -log(sum_intensity);
+                PPG_box = sum_intensity;
     
-            if rem(j,600) == 0       % plotting BFI every 10s
-                figure(h2)
-                maxPlot = max([maxPlot BFI_box_mean+BFI_box_std]);
-                errorbar(j/B.FPS/60,BFI_box_mean,BFI_box_std,'-s', ...
-                    'color',B.Channel(i),'MarkerSize',5,'MarkerFaceColor','k');
-                axis([0 B.Measurement_time 0 maxPlot*1.2])
-            end
-        end
+                temp = im2col(samp_img2,[7 7],'distinct');
+                MEAN = mean(temp);
+                STD = std(temp,1);
+                K = STD./MEAN;
+                BFI_box = (1./K.^2)'; % 9x1 column vector 
+                % didn't work when 1/K'.^2 was used (figure out later)
         
-    end
+                BFI_box_mean = mean(BFI_box);
+                BFI_box_std = std(BFI_box);
+    
+        
+                final_BFI(i,j) = BFI_box_mean;
+                final_BFI_std(i,j)= BFI_box_std;
+                final_PPG(i,j) = PPG_box;
+        
+                if rem(j,600) == 0       % plotting BFI every 10s
+                    figure(h2)
+                    maxPlot = max([maxPlot BFI_box_mean+BFI_box_std]);
+                    errorbar(j/B.FPS/60,BFI_box_mean,BFI_box_std,'-s', ...
+                        'color',B.Channel(i),'MarkerSize',5,'MarkerFaceColor','k');
+                    axis([0 B.Measurement_time 0 maxPlot*1.2])
+                end
+            end           
+        end
 %end
