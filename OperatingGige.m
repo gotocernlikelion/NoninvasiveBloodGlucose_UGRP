@@ -1,4 +1,4 @@
-%function [outputArg1,outputArg2] = OperatingGige()
+%function OperatingGige()
     
     clc;
     clear;
@@ -24,7 +24,7 @@
 
 %%
     imaqreset
-
+    
     % Load the background array
     if isfile("background_array.mat") % search the background array
         load("background_array.mat"); % load background array
@@ -39,13 +39,13 @@
     B.str_point = '0'; % input('Start point: ', 's');
     B.duration = '0'; % input('Duration: ', 's');
     B.Channel = 'g'; % input('Channel: ', 's');
-
+    
     ch_text = 'rgbcmyw';   % all the available channels ('bgorsyp' for old)
     
     B.Exposure_time = str2double(B.Exposure_time);
     B.FPS = str2double(B.FPS);
     B.Measurement_time = str2double(B.Measurement_time);
-
+    
     if ~isempty(B.str_point) && ~isempty(B.duration)
         
         B.str_point = str2double(B.str_point);
@@ -54,7 +54,7 @@
         B.str_point = 0;
         B.duration = 0;
     end
-
+    
     ch_len = length(B.Channel);
     ch_num = zeros(1,ch_len);
     ch_log = false([1 7]);      % logical array of size 1x7
@@ -66,22 +66,22 @@
     % Set up the measurement time
     totalTime_in_sec = B.Measurement_time*60; % convert min to sec
     totalframe = totalTime_in_sec*B.FPS; %% convert sec to the number of frame
-
+    
     % Set up variable for BFI calculation
     final_BFI = zeros(ch_len,totalframe,'double');
     final_BFI_std = zeros(ch_len,totalframe,'double');
     final_PPG = zeros(ch_len,totalframe,'double');
-
+    
     for i = 1:ch_len
         img_array{i} = zeros(21,21,totalframe);
     end
-
+    
     % Initializing GigE camera
     gc = gigecamlist;
     hgt=height(gc);
     for i = 1:hgt
         g(i) = gigecam(string(gc.IPAddress(i)), 'PixelFormat', 'Mono12');
-
+    
         g(i).AcquisitionFrameRateAbs = B.FPS;
         g(i).AcquisitionFrameRateEnable = 'True';
         g(i).Width = 128;      g(i).Height = 128;
@@ -90,23 +90,23 @@
     end
     
     ch_text4xlabel = {};    % has to be a cell variable for xtick labeling
-
+    
     for i = 1:7
         xtickarray(i) = 14 + (i-1)*23;
         ch_text4xlabel{i} = ch_text(i);
     end
-
+    
     % coordinates of upper left corner of each ROI
-%             %                   r     g     b     c     m     y     w
-%             pixel_location = [  14    98    26    84    67    41    57; % x coord
-%                                 47    66    87    24    96    16    56; % y coord
-%                              ];
-
+    %             %                   r     g     b     c     m     y     w
+    %             pixel_location = [  14    98    26    84    67    41    57; % x coord
+    %                                 47    66    87    24    96    16    56; % y coord
+    %                              ];
+    
     %                   r     g     b     c     m     y     w
     pixel_location = [  14    98    26    84    67    41    57; % x coord
                         47    37    87    24    96    16    56; % y coord
                      ];
-
+    
     % checking speckle image
     h0 = figure;
     set(h0,'position',[50 50 500 550],'ToolBar','none','MenuBar','none');
@@ -114,7 +114,7 @@
     filename_BFI = strcat('\',DataDir,'-BFIdata');
     filename_PPG = strcat('\',DataDir,'-PPGdata');
     filename_img = strcat('\',DataDir,'-image');
-
+    
     % maxVal = 0;
     while true
         for i = 1:hgt
@@ -126,7 +126,7 @@
             axis image
             colorbar();
             title('ROI check - Make sure each ROI box is well within each beam')
-
+    
             col_img = [];
             for j = 1:7
                 y1 = pixel_location(2,j);
@@ -139,25 +139,25 @@
                 line([x1 x2],[y2,y2],'color',ch_text(j),'linewidth',lw);
                 line([x1 x1],[y1,y2],'color',ch_text(j),'linewidth',lw);
                 line([x2 x2],[y1,y2],'color',ch_text(j),'linewidth',lw);
-                Ch(i).Col(j).col_img = [col_img int_img SnapShot(i).test_img(y1:y2,x1:x2)];        
+                col_img = [col_img int_img SnapShot(i).test_img(y1:y2,x1:x2)];
+                CH(i).col_img = col_img;
             end
-
-            for j=1:7
-                subplot(2,hgt,i+hgt)
-                imagesc(Ch(i).Col(j).col_img, [0 2500])
-                colormap('jet')
-                xticks(xtickarray);
-                xticklabels(ch_text4xlabel)
-                yticklabels({})
-            end
-
+    
+            subplot(2,hgt,i+hgt)
+            imagesc(CH(i).col_img, [0 2500])
+            colormap('jet')
+            xticks(xtickarray);
+            xticklabels(ch_text4xlabel)
+            yticklabels({})
+            
+    
             axis image
             title("press SPACEBAR to proceed, or Q to quit")
             pause(0.1)
         end
         
        
-        if h0.CurrentCharacter == 'Q'
+        if h0.CurrentCharacter == 'Q' 
             disp('Quitting the program ...')
             
             close(h0)
@@ -171,7 +171,6 @@
             break
         end
     end
-    % main loop
 %%
     tic
 
