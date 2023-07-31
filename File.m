@@ -34,13 +34,14 @@ classdef File
             else
                 background_array = zeros(128,128); % make a zero array instead of background array
             end
+            
             % Input the parameters
-            B.Exposure_time = '2000';% input('Exposure time: ', 's');
-            B.FPS = '60';%input('Frames per second: ', 's');
-            B.Measurement_time = '1';% input('Measurement time: ', 's');
-            B.str_point = '0';% input('Start point: ', 's');
-            B.duration = '0';% input('Duration: ', 's');
-            B.Channel = 'g';% input('Channel: ', 's');
+            B.Exposure_time = '2000'; % input('Exposure time: ', 's');
+            B.FPS = '60'; % input('Frames per second: ', 's');
+            B.Measurement_time = '1'; % input('Measurement time: ', 's');
+            B.str_point = '0'; % input('Start point: ', 's');
+            B.duration = '0'; % input('Duration: ', 's');
+            B.Channel = 'g'; % input('Channel: ', 's');
         
             ch_text = 'rgbcmyw';   % all the available channels ('bgorsyp' for old)
             
@@ -79,7 +80,7 @@ classdef File
             end
             % Initializing GigE camera
             gc = gigecamlist;
-            g = gigecam(string(gc.IPAddress), 'PixelFormat', 'Mono12');
+            g = gigecam(string(gc.IPAddress(1)), 'PixelFormat', 'Mono12');
         
             g.AcquisitionFrameRateAbs = B.FPS;
             g.AcquisitionFrameRateEnable = 'True';
@@ -306,7 +307,7 @@ classdef File
         
             % close(h4);
            
-            User_note = inputdlg(prompt,dlgtitle,dim)
+            User_note = inputdlg(prompt,dlgtitle,dim);
             % disp(User_note{:})
             % if isempty(User_note{:})
             %     disp('User note empty')
@@ -349,6 +350,7 @@ classdef File
             close(h4)
             close(h2)
             close(h0) 
+
             cd ..
         end
     

@@ -3,7 +3,7 @@ function main()
         %데이터 탐색 & 경로추가
         currentFolder=pwd; %현재 폴더 위치 파악
         cd(".\Data\") % data 폴더 접근
-        MyData=dir('*-*-*'); 
+        MyData=dir('*-*-*'); %폴더 탐색
             
         if isempty(MyData) 
             fprintf("no files \n");

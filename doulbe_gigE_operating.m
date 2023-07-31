@@ -1,6 +1,8 @@
 %%
 clear,clc,close;
 %%
+imaqreset
+%%
 gc = gigecamlist;
 % gc.IPAddress(1)
 %%
@@ -11,11 +13,19 @@ g1.AcquisitionFrameRateAbs = 60;
 g1.AcquisitionFrameRateEnable = 'True';
 g1.GainRaw = 3;
 g1.ExposureTimeAbs = 2000;
+g1.Timeout = 50;
 %%
 g2.AcquisitionFrameRateAbs = 60;
 g2.AcquisitionFrameRateEnable = 'True';
 g2.GainRaw = 3;
 g2.ExposureTimeAbs = 2000;
+g2.Timeout = 50;
+%%
+test_img1 = snapshot(g1);
+colormap("jet");
+imagesc(test_img1);
+axis image
+colorbar();
 %%
 while true
     test_img1 = snapshot(g1);
