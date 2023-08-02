@@ -180,7 +180,7 @@ classdef File
             hold on
         
             maxPlot = 10;
-        
+            tic
             for j = 1:totalframe
                 test_img = snapshot(g);
                 while 1      % wait until img is read from the camera
@@ -233,6 +233,7 @@ classdef File
                 end
             
             end
+            toc
             
             total_time = toc;
             eachtime = toc/totalframe;

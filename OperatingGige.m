@@ -4,7 +4,7 @@
     clear;
 
     % Create a new file
-    cd(".\Data\") % 파일 접근
+    cd(".\garbage\") % 파일 접근
     CurDir = pwd; % 현재 폴더 경로 저장
     CurDate = date; % 현재 날짜 저장
     
@@ -118,11 +118,11 @@
     % maxVal = 0;
     while true
         for i = 1:hgt
-            SnapShot(i).test_img = snapshot(g(i));
+            CH(i).test_img = snapshot(g(i));
             % maxVal = max([maxVal max(test_img(:))]);
             subplot(2,hgt,i)
             colormap("jet");
-            imagesc(SnapShot(i).test_img,[0 2500]);
+            imagesc(CH(i).test_img,[0 2500]);
             axis image
             colorbar();
             title('ROI check - Make sure each ROI box is well within each beam')
@@ -139,7 +139,7 @@
                 line([x1 x2],[y2,y2],'color',ch_text(j),'linewidth',lw);
                 line([x1 x1],[y1,y2],'color',ch_text(j),'linewidth',lw);
                 line([x2 x2],[y1,y2],'color',ch_text(j),'linewidth',lw);
-                col_img = [col_img int_img SnapShot(i).test_img(y1:y2,x1:x2)];
+                col_img = [col_img int_img CH(i).test_img(y1:y2,x1:x2)];
                 CH(i).col_img = col_img;
             end
     
@@ -172,7 +172,61 @@
         end
     end
 %%
-    tic
+
+    
+    for j = 1:totalframe
+        tic
+        for i = 1 : hgt
+            CH(i).test_img = snapshot(g(i));
+            while 1      % wait until img is read from the camera
+                if ~isempty(CH(i).test_img)
+                    break
+                else
+                    continue
+                end
+            end
+            img = cast(CH(i).test_img,'double'); % change data type because img of initial condiditon is uint16
+            IMG(:,:,i)=img;
+            img2 = img - background_array; % - let's bypass bg subtraction for now
+            IMG2(:,:,i)=img2;
+        end
+        
+        
+        for i = 1:ch_len    % BFI calculation for selected channels
+
+            y1 = pixel_location(2,ch_num(i));
+            y2 = pixel_location(2,ch_num(i)) + 20;
+            x1 = pixel_location(1,ch_num(i));
+            x2 = pixel_location(1,ch_num(i)) + 20;
+
+            for k = 1 : hgt
+
+                CH(k).img_array{i}(:,:,j) = IMG(y1:y2,x1:x2,k); % raw data
+                CH(k).samp_img2 = IMG2(y1:y2,x1:x2,k); % background subtrated data
+                sum_intensity = sum(CH(k).img_array{i}(:,:,j),'all');
+                %PPG_box = -log(sum_intensity);
+                PPG_box(i,j,k) = sum_intensity;
+
+                temp = im2col(CH(k).samp_img2,[7 7],'distinct');
+                MEAN = mean(temp);
+                STD = std(temp,1);
+                K = STD./MEAN;
+                BFI_box = (1./K.^2)'; % 9x1 column vector 
+                % didn't work when 1/K'.^2 was used (figure out later)
+    
+                BFI_box_mean(i,j,k) = mean(BFI_box);
+                BFI_box_std(i,j,k) = std(BFI_box);
+           
+    
+                final_BFI(i,j,k) = BFI_box_mean(i,j,k);
+                final_BFI_std(i,j)= BFI_box_std(i,j,k);
+                final_PPG(i,j,k) = PPG_box(i,j,k);
+        
+            end
+        end
+        toc
+    end
+    
 
     h2 = figure;    % figure window for BFI Graph plot
     set(h2,'position',[1 250 800 300],'ToolBar','none','MenuBar','none');
@@ -189,55 +243,25 @@
     hold on
 
     maxPlot = 10;
-        for j = 1:totalframe
-            SnapShot(i).test_img = snapshot(g(i));
-            while 1      % wait until img is read from the camera
-                if ~isempty(SnapShot(i).test_img)
-                    break
-                else
-                    continue
-                end
-            end
-            img = cast(SnapShot(i).test_img,'double'); % change data type because img of initial condiditon is uint16
-            img2 = img - background_array; % - let's bypass bg subtraction for now
-    
-            for i = 1:ch_len    % BFI calculation for selected channels
-                
-                hold on
-    
-                y1 = pixel_location(2,ch_num(i));
-                y2 = pixel_location(2,ch_num(i)) + 20;
-                x1 = pixel_location(1,ch_num(i));
-                x2 = pixel_location(1,ch_num(i)) + 20;
-                img_array{i}(:,:,j) = img(y1:y2,x1:x2); % raw data
-                samp_img2 = img2(y1:y2,x1:x2); % background subtrated data
-                            
-                sum_intensity = sum(img_array{i}(:,:,j),'all');
-                %PPG_box = -log(sum_intensity);
-                PPG_box = sum_intensity;
-    
-                temp = im2col(samp_img2,[7 7],'distinct');
-                MEAN = mean(temp);
-                STD = std(temp,1);
-                K = STD./MEAN;
-                BFI_box = (1./K.^2)'; % 9x1 column vector 
-                % didn't work when 1/K'.^2 was used (figure out later)
-        
-                BFI_box_mean = mean(BFI_box);
-                BFI_box_std = std(BFI_box);
-    
-        
-                final_BFI(i,j) = BFI_box_mean;
-                final_BFI_std(i,j)= BFI_box_std;
-                final_PPG(i,j) = PPG_box;
-        
+
+    for j = 1:totalframe
+        for i = 1 : ch_len
+            for k = 1 : hgt
                 if rem(j,600) == 0       % plotting BFI every 10s
                     figure(h2)
-                    maxPlot = max([maxPlot BFI_box_mean+BFI_box_std]);
-                    errorbar(j/B.FPS/60,BFI_box_mean,BFI_box_std,'-s', ...
+                    maxPlot = max([maxPlot BFI_box_mean(i,j,k)+BFI_box_std(i,j,k)]);
+                    errorbar(j/B.FPS/60,BFI_box_mean(i,j,k),BFI_box_std(i,j,k),'-s', ...
                         'color',B.Channel(i),'MarkerSize',5,'MarkerFaceColor','k');
                     axis([0 B.Measurement_time 0 maxPlot*1.2])
                 end
-            end           
-        end
+            end
+        end           
+    end
+
+    
 %end
+
+%% delete folder
+cd("garbage\")
+rmdir("*-*-*-*","s")
+cd ..

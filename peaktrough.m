@@ -21,8 +21,8 @@ else
     raw_data=smoothdata(raw_data,'movmean',5);
 end
 
-num=60;
-row=num/6;
+num=70;
+row=num/7;
 col=num/10;
 L=length(raw_data);
 t_max=L/60;
