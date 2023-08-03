@@ -172,10 +172,9 @@
         end
     end
 %%
-
-    
+    close
+    tic
     for j = 1:totalframe
-        tic
         for i = 1 : hgt
             CH(i).test_img = snapshot(g(i));
             while 1      % wait until img is read from the camera
@@ -224,9 +223,8 @@
         
             end
         end
-        toc
     end
-    
+    toc
 
     h2 = figure;    % figure window for BFI Graph plot
     set(h2,'position',[1 250 800 300],'ToolBar','none','MenuBar','none');
