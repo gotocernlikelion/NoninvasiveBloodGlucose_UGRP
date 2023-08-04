@@ -20,7 +20,7 @@ end
 %%
 for i = 1:10 
     tic
-        test_img = snapshot(g(1));
+        test_img(:,:,i) = snapshot(g(1));
     toc
     subplot(2,1,1)
     colormap("jet");
@@ -28,3 +28,5 @@ for i = 1:10
     axis image
     colorbar();
 end
+
+

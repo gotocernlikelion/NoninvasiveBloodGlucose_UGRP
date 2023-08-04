@@ -16,8 +16,8 @@ function [R_factor, mean_R] = FindR(file,path)
         raw_data=smoothdata(raw_data,'movmean',5);
     end
     
-    num=60;
-    row=num/6;
+    num=90;
+    row=num/9;
     col=num/10;
     L=length(raw_data);
     t_max=L/60;

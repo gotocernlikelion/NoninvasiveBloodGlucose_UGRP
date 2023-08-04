@@ -38,7 +38,7 @@ classdef File
             % Input the parameters
             B.Exposure_time = '2000'; % input('Exposure time: ', 's');
             B.FPS = '60'; % input('Frames per second: ', 's');
-            B.Measurement_time = '1'; % input('Measurement time: ', 's');
+            B.Measurement_time = '1.5'; % input('Measurement time: ', 's');
             B.str_point = '0'; % input('Start point: ', 's');
             B.duration = '0'; % input('Duration: ', 's');
             B.Channel = 'g'; % input('Channel: ', 's');
@@ -101,8 +101,8 @@ classdef File
 %                              ];
 
             %                   r     g     b     c     m     y     w
-            pixel_location = [  14    98    26    84    67    41    57; % x coord
-                                47    37    87    24    96    16    56; % y coord
+            pixel_location = [  14    95    26    84    67    41    57; % x coord
+                                47    20    87    24    96    16    56; % y coord
                              ];
             % checking speckle image
             h0 = figure;
