@@ -13,12 +13,20 @@ function [R_factor, mean_R] = FindR(file,path)
     %     filtraw_data=smoothdata(raw_data,'movmean',100);
     %     raw_data=raw_data-filtraw_data;
     %     raw_data = exp(-1*raw_data);
+        raw_data=-log(raw_data(:));
         raw_data=smoothdata(raw_data,'movmean',5);
     end
     
+    figure
+    plot(raw_data)
+    title('rawdata')
+    xlabel('frame(num)')
+    ylabel('amplitude')
+
     num=90;
-    row=num/9;
     col=num/10;
+    row=num/col;
+   
     L=length(raw_data);
     t_max=L/60;
     interval=(L/num);
@@ -31,13 +39,13 @@ function [R_factor, mean_R] = FindR(file,path)
 %         subplot(row,col,i)
     
         %plot raw data
-%         plot(t,raw_data(interval*(i-1)+1:interval*i))
+%          plot(t,raw_data(interval*(i-1)+1:interval*i))
     
         %find max min
         Max=max(raw_data(interval*(i-1)+1:interval*i));
         Min=min(raw_data(interval*(i-1)+1:interval*i));
         
-%         hold on
+        hold on
         mu(i) = mean(raw_data(interval*(i-1)+1:interval*i));
 %         hline = refline([0 mu(i)]);
 %         hline.Color = 'r';
@@ -48,9 +56,9 @@ function [R_factor, mean_R] = FindR(file,path)
 %         hline = refline([0 Min]);
 %         hline.Color = 'b';
     
-%         title('rawdata')
-%         xlabel('t(s)')
-%         ylabel('amplitude')
+        title('rawdata')
+        xlabel('t(s)')
+        ylabel('amplitude')
         
         amp(i)=Max-Min;
         AC(i)=amp(i);
