@@ -2,12 +2,13 @@ function main()
 
         %데이터 탐색 & 경로추가
         currentFolder=pwd; %현재 폴더 위치 파악
+        addpath(".\*");
         cd(".\Data\") % data 폴더 접근
         MyData=dir('*-*-*'); %폴더 탐색
             
         if isempty(MyData) 
             fprintf("no files \n");
-            pause
+            pause(1);
         else
             for i=1:length(MyData)
                 addpath(MyData(i).name);
@@ -31,9 +32,9 @@ function main()
             a=input('원하는 기능을 선택해 주세요:','s');
            
             if a == '1'
-                File.Measure();
+                modify_gige_operating();
             elseif a == '2'
-                File.PlotGraph();
+                modify_gige_plot();  
             elseif a == '3'
                 break
             else

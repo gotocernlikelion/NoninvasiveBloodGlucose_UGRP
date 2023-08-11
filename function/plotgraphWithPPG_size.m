@@ -1,14 +1,9 @@
 function [filtBFI,filtPPG] = plotgraphWithPPG_size(B,size_bfi,size_ppg)
-    b_bfi = 1/size_bfi*ones(1, size_bfi);
-    b_ppg = 1/size_ppg*ones(1, size_ppg);
-    
-    filtBFI = filter(b_bfi, 1, B.BFI_data);
-    filtPPG = filter(b_ppg, 1, B.PPG_data);
 
-    %eliminate DC noise
-    filtBFI(1:size_bfi,:) = ones(size_bfi,1)*mean(filtBFI(size_bfi:end, :));
-    filtPPG(1:size_ppg,:) = ones(size_ppg,1)*mean(filtPPG(size_ppg:end, :));
-
+        
+    filtBFI=smoothdata(B.BFI_data,'movmean',size_bfi);
+    filtPPG=smoothdata(B.PPG_data,'movmean',size_ppg);
+    B.color_value_ppg='mykw';
 %     % normalize, offset 조정
 %     filtBFI = filtBFI - mean(filtBFI);
 %     %filtBFI = filtBFI/max(max(filtBFI));
@@ -18,20 +13,14 @@ function [filtBFI,filtPPG] = plotgraphWithPPG_size(B,size_bfi,size_ppg)
 %     filtBFI = filtBFI/max(max(filtBFI));
 %     %filtPPG = filtPPG - filter(100,1,filtPPG);
 %     filtPPG = filtPPG/max(max(filtPPG));
-    
-    
-
-
-    hold("on");
-
-    
+    hgt=size(B.BFI_data,2);    
     %for i = 1:length(B.color_value) - 1
-    for i=1
+    for i=1:hgt
         yyaxis left
-        plot(B.x, filtBFI(:,i), B.color_value(i));
+        plot(B.x, filtBFI(:,i), B.color_value(i),'LineStyle','-');
         hold on
         yyaxis right
-        plot(B.x_ppg, filtPPG(:,i),'k');
+        plot(B.x_ppg, filtPPG(:,i),B.color_value_ppg(i),'LineStyle','-');
     end
 
     %legend({'g_{bfi}','c_{bfi}', 'g_{ppg}','c_{ppg}'},'Location','southwest')

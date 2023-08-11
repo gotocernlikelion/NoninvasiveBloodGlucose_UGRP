@@ -1,6 +1,6 @@
 function modify_gige_plot()    
     %파일 찾기 및 접근
-    cd(".\garbage\")
+    cd(".\Data\")
     currentFolder = pwd;
     MyData=uigetdir();
     cd(MyData)
@@ -15,17 +15,15 @@ function modify_gige_plot()
     for i = 1:length(mat_file)
         if contains(string(mat_file(i).name) , "BFIdata") 
             Extract(1).data_name = mat_file(i).name;
-            Extract(1).data_file = mat_file(i).folder;
-        else
-            
+            Extract(1).data_file = mat_file(i).folder;  
         end
+
         if contains(string(mat_file(i).name) , "PPGdata") 
             Extract(2).data_name = mat_file(i).name;
             Extract(2).data_file= mat_file(i).folder;
-        else
         end    
     end
-    
+%%    
     %bfi
     B.data_name = string(Extract(1).data_name);
     B.BFI_data = importdata(B.data_name);
@@ -69,3 +67,7 @@ function modify_gige_plot()
     
     % clear legend
     % legend({B.color_value(:)}, 'Location','northeastoutside');
+    
+    clear
+    clc
+end

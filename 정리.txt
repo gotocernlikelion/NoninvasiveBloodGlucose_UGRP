@@ -1,0 +1,42 @@
+1. Introduction
+비침습적 혈당 측정기 수요
+
+비침습적 혈당 측정기 개발역사
+- OP
+- Ramman
+- NIR (NIR 연구 동향, 한계점, NIR을 선택한 이유)
+
+우리의 차별성
+- PPG
+- NIR
+- 인공지능
+- BFI
+
+(얼마나 더 좋아졌다: 실험 결과를 가지고 쓰면 될듯)
+
+
+2. Method
+NIRs
+- Thoery(Modified Beer Lamber Law)
+- Calibration
+
+PPG
+- Theory(SpO2: R-factor)
+ - AC/DC 설명
+ - R-factor 설명 
+- Calibration 
+
+BFI
+- Theory(Contrast)
+- Calibration
+
+인공지능
+
+
+3. Result
+
+
+4. Discussion
+
+
+5. Reference
