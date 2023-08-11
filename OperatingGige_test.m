@@ -35,7 +35,7 @@
     % Input the parameters
     B.Exposure_time = '2000'; % input('Exposure time: ', 's');
     B.FPS = '60'; % input('Frames per second: ', 's');
-    B.Measurement_time = '4'; % input('Measurement time: ', 's');
+    B.Measurement_time = '1'; % input('Measurement time: ', 's');
     B.str_point = '0'; % input('Start point: ', 's');
     B.duration = '0'; % input('Duration: ', 's');
     B.Channel = 'g'; % input('Channel: ', 's');
@@ -177,22 +177,32 @@
    tic
     for j = 1:totalframe
 
-        for i = 1 : hgt
-            CH(i).test_img = snapshot(g(i));
-            
-            while 1      % wait until img is read from the camera
-                if ~isempty(CH(i).test_img)
-                    break
-                else
-                    continue
-                end
+        % for i = 1 : hgt
+        CH(1).test_img = snapshot(g(1));
+        CH(2).test_img = snapshot(g(2));
+        
+        while 1      % wait until img is read from the camera
+            if ~isempty(CH(1).test_img) || ~isempty(CH(2).test_img) 
+                break
+            else
+                continue
             end
-            img = cast(CH(i).test_img,'double'); % change data type because img of initial condiditon is uint16
-            IMG(:,:,i)=img;
-            img2 = img - background_array; % - let's bypass bg subtraction for now
-            IMG2(:,:,i)=img2;
         end
-  
+            % end
+            img1 = cast(CH(1).test_img,'double'); % change data type because img of initial condiditon is uint16
+            img2 = cast(CH(2).test_img,'double'); % change data type because img of initial condiditon is uint16
+            IMG(:,:,1)=img1;
+            IMG(:,:,2)=img2;
+            img3 = img1 - background_array; % - let's bypass bg subtraction for now
+            img4 = img2 - background_array; % - let's bypass bg subtraction for now
+            IMG2(:,:,1)=img3;
+            IMG2(:,:,2)=img4;
+        
+    end
+   toc
+
+   tic
+   for j = 1:totalframe
         for i = 1:ch_len    % BFI calculation for selected channels
 
             y1 = pixel_location(2,ch_num(i));
