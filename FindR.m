@@ -1,4 +1,4 @@
-%function FindR()
+function FindR()
     
     clear
     clc
@@ -20,8 +20,8 @@
     if contains(file,'PPGdata.mat')
         hgt=size(meanPPG,2);
         for i=1:hgt
-            raw_data(:,i)=exp(-meanPPG(:,i));
-            %raw_data(:,i)=meanPPG(:,i);
+            %raw_data(:,i)=exp(-meanPPG(:,i));
+            raw_data(:,i)=meanPPG(:,i);
             raw_data(:,i)=smoothdata(raw_data(:,i),'movmean',5);
         end
     end
@@ -72,4 +72,4 @@
         R_factor(i)=factor(i,1)/factor(i,2);
     end
     plot(R_factor)
-%end
+end
