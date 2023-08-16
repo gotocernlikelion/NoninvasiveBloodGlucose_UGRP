@@ -2,7 +2,7 @@ function main()
 
         %데이터 탐색 & 경로추가
         currentFolder=pwd; %현재 폴더 위치 파악
-        addpath(".\*");
+        addpath(genpath(currentFolder));
         cd(".\Data\") % data 폴더 접근
         MyData=dir('*-*-*'); %폴더 탐색
             
@@ -16,9 +16,7 @@ function main()
         end
 
         cd(currentFolder)
-        if exist("function\")
-            addpath("function\");
-        end
+%%
 
         while true
     

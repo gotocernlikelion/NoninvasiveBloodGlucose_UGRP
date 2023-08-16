@@ -35,7 +35,7 @@ function modify_gige_operating()
     % Input the parameters
     B.Exposure_time = '2000'; % input('Exposure time: ', 's');
     B.FPS = '60'; % input('Frames per second: ', 's');
-    B.Measurement_time = '3'; % input('Measurement time: ', 's');
+    B.Measurement_time = '1'; % input('Measurement time: ', 's');
     B.str_point = '0'; % input('Start point: ', 's');
     B.duration = '0'; % input('Duration: ', 's');
     B.Channel = 'rg'; % input('Channel: ', 's');
@@ -103,7 +103,7 @@ function modify_gige_operating()
     %                              ];
     
     %                   r     g     b     c     m     y     w
-    pixel_location = [  65   105     26    84    67    41    57; % x coord
+    pixel_location = [  65   105   26    84    67    41    57; % x coord
                         65   63    87    24    96    16    56; % y coord
                      ];
     
