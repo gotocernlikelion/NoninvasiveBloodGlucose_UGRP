@@ -48,7 +48,8 @@ for i=1:hgt
         
        % moving average filter
        Y(i,j).sample = Y(i,j).sample - smoothdata(Y(i,j).sample,'movmean',100);
-       plot()
+       subplot(hgt, num_sample,(i-1)*num_sample+j)
+       plot(Y(i,j).sample)
     end
 end
 
