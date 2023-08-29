@@ -1,4 +1,4 @@
-function FindR()
+%function FindR()
     
     clear
     clc
@@ -8,13 +8,16 @@ function FindR()
     [file, path]=uigetfile('*.mat'); 
     addpath(path)
     load(file)
+    
+    fs=60;
 
     if contains(file,'BFIdata.mat') 
         hgt=size(meanBFI,2);
         for i=1:hgt
-            raw_data(:,i)=meanBFI(:,i);
+            raw_data(:,i)=meanBFI(:,i);                      
             raw_data(:,i)=smoothdata(raw_data(:,i),'movmean',5);
-        end
+            fu_raw(:,i)=fft(raw_data(:,i));
+        end       
     end
 
     if contains(file,'PPGdata.mat')
@@ -25,6 +28,22 @@ function FindR()
             raw_data(:,i)=smoothdata(raw_data(:,i),'movmean',5);
         end
     end
+    
+%%
+    Fs = 60;            % Sampling frequency                    
+    T = 1/Fs;             % Sampling period       
+    L = 10800;             % Length of signal
+    t = (0:L-1)*T;        % Time vector
+
+    Y = fft(raw_data(:,2));
+    Y(1)=0;
+    P2 = abs(Y/L);
+    P1 = P2(1:L/2+1);
+    P1(2:end-1) = 2*P1(2:end-1);
+
+    f = Fs*(0:(L/2))/L;
+    plot(f,P1) 
+
     cd(FirstFolder)
 %%  
 
@@ -72,4 +91,4 @@ function FindR()
         R_factor(i)=factor(i,1)/factor(i,2);
     end
     plot(R_factor)
-end
+%end
