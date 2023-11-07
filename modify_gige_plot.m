@@ -63,6 +63,8 @@ function modify_gige_plot()
     % mean & std BFI
     %clear legend
     [B.filtBFI, B.filtPPG] = plotgraphWithPPG_size(B, B.size, B.size_ppg);
+    %figure
+    %[B.filtPPG] = plotgraph_size(B, B.size_ppg);
     % [B.Mean_BFI, B.Std_BFI] = Mean_Std(B.filtBFI);
     
     % clear legend
@@ -70,4 +72,5 @@ function modify_gige_plot()
     
     clear
     clc
+    cd ..
 end

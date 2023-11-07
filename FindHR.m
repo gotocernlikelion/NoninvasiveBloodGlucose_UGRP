@@ -1,8 +1,7 @@
-%function FindHR()
-    
+function findHR()
     clear
     clc
-
+    
     FirstFolder=pwd;
     cd('./Data/')
     [file, path]=uigetfile('*.mat'); 
@@ -13,59 +12,68 @@
         hgt=size(meanBFI,2);
         for i=1:hgt
             raw_data(:,i)=meanBFI(:,i);                      
-            raw_data(:,i)=smoothdata(raw_data(:,i),'movmean',25);
         end       
     end
-
+    
     if contains(file,'PPGdata.mat')
         hgt=size(meanPPG,2);
         for i=1:hgt
             raw_data(:,i)=meanPPG(:,i);       
         end
     end
+    
+    a=input('sample time:','s');
+    b=input('width:','s');
+    a=str2double(a);
+    b=str2double(b);
+
 
     fs=60;
-    
-    % Below 2Hz 
-    d1 = designfilt("bandpassiir", ...
-    "SampleRate", 60, ...
-    "FilterOrder", 4, ...
-    "HalfPowerFrequency1", 2.5, ...
-    "HalfPowerFrequency2", 3.5);
-    
-    t_sample=1; % 샘플 구간(초)
+    t_sample=a; % 샘플 구간(초)
     num=60*t_sample; % 샘플 프레임 개수 
-   
+    
     L=length(raw_data); % 전체 프레임 개수
     num_sample=(L/num); % 샘플의 개수
     
     ter=num_sample/num;
-    Time= 1/60:1/60:num_sample;
+    Time= 1/fs:1/fs:num_sample;
+    n=b;
     
     for i=1:hgt
-        y1(:,i) = filtfilt(d1,raw_data(:,i));
-        y1(:,i)=y1(:,i)-smoothdata(y1(:,i),'movmean',100);
+        figure
+        for j=1:num_sample
+    
+           Time_sample= (num*(j-1)+1)/fs:1/fs:(num*j)/fs;
+           % filter
+           Y(i,j).sample=raw_data(num*(j-1)+1:num*j,i);
+           
+           Y(i,j).sample=detrend(Y(i,j).sample);
+            
+           % moving average filter
+           %Y(i,j).sample = Y(i,j).sample - smoothdata(Y(i,j).sample,'sgolay',10);
+           Y(i,j).sample = lowpass(Y(i,j).sample,4,100);
+           %Y(i,j).sample = highpass(Y(i,j).sample,0.4,100);
+               
+           %plot sample ppg data
+           subplot(num_sample/n,n,j)
+           plot(Time_sample,Y(i,j).sample)
+           findpeaks(Y(i,j).sample,Time_sample,'MinPeakDistance',0.5)
+           [HR(i,j).peaks,HR(i,j).locs]=findpeaks(Y(i,j).sample,Time_sample,'MinPeakDistance',0.5);
+           title('filtered data')
+           xlabel('time(t)')
+           ylabel('amplitude')
+           HR(i,j).heart_rate=length(HR(i,j).peaks);
+           
+        end
+    
     end
+
+
     cd(FirstFolder)
+end
 
-    plot(Time,y1(:,1))
 
-   
-   % for i=1:hgt
 
-        
-        %subplot(hgt,hgt,i)
-        % findpeaks(y1(:,i),Time,"MinPeakDistance",0.5,"MinPeakHeight",0);
-        % [PEAKS(i).Peak,PEAKS(i).Locs]=findpeaks(y1(:,i),Time,"MinPeakDistance",0.5,"MinPeakHeight",0);
-        % PEAKS(i).HR=diff(PEAKS(i).Locs);
-        
-        %title('rawdata')
-        %xlabel('time(t)')
-        %ylabel('amplitude')
 
-        %subplot(hgt,hgt,i+hgt)
-        %histogram(PEAKS(i).HR)
-       
-   % end
-   
-%end
+
+ 

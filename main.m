@@ -26,7 +26,9 @@ function main()
             %메뉴 선택
             fprintf("1. BFI/PPG Meausre \n");
             fprintf("2. BFI/PPG Plot \n");
-            fprintf("3. exit \n");
+            fprintf("3. FindHR \n");
+            fprintf("4. findNIRS \n");
+            fprintf("5. exit \n");
             a=input('원하는 기능을 선택해 주세요:','s');
            
             if a == '1'
@@ -34,7 +36,11 @@ function main()
             elseif a == '2'
                 modify_gige_plot();  
             elseif a == '3'
-                break
+                findHR();
+            elseif a == '4'
+                 findNIRS();
+            elseif a == '5'
+                 break
             else
                 fprintf("입력오류 \n");
                 pause

@@ -4,6 +4,7 @@ function [filtBFI,filtPPG] = plotgraphWithPPG_size(B,size_bfi,size_ppg)
     filtBFI=smoothdata(B.BFI_data,'movmean',size_bfi);
     filtPPG=smoothdata(B.PPG_data,'movmean',size_ppg);
     B.color_value_ppg='mykw';
+    wavelength=[830, 785, 808];
 %     % normalize, offset 조정
 %     filtBFI = filtBFI - mean(filtBFI);
 %     %filtBFI = filtBFI/max(max(filtBFI));
@@ -18,10 +19,13 @@ function [filtBFI,filtPPG] = plotgraphWithPPG_size(B,size_bfi,size_ppg)
     for i=1:hgt
         yyaxis left
         plot(B.x, filtBFI(:,i), B.color_value(i),'LineStyle','-');
+        
         hold on
         yyaxis right
         plot(B.x_ppg, filtPPG(:,i),B.color_value_ppg(i),'LineStyle','-');
     end
+    legend('BFI-830', 'BFI-785', 'BFI-808','PPG-830', 'PPG-785', 'PPG-808')
+    
 
     %legend({'g_{bfi}','c_{bfi}', 'g_{ppg}','c_{ppg}'},'Location','southwest')
 
