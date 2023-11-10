@@ -1,4 +1,4 @@
-function modify_gige_operating()
+%function modify_gige_operating()
     
     clc;
     clear;
@@ -110,8 +110,8 @@ function modify_gige_operating()
     % coordinates of upper left corner of each ROI
     
     %                   r    g    b     c     m     y     w
-    pixel_location = [  50   62   80    96    67    41    57; % x coord
-                        60   70   75    70    96    16    56; % y coord
+    pixel_location = [  50   62   75    96    67    41    57; % x coord
+                        60   70   60    70    96    16    56; % y coord
                      ];
     
     % checking speckle image
@@ -373,6 +373,6 @@ function modify_gige_operating()
     close(h2)
     close(h0) 
 
-    learning(T,CurDir, DataDir)
+    Learning(T, DataDir)
 
-end
+%end

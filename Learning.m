@@ -1,12 +1,22 @@
-function Learning(T,CurDir, DataDir)
+function Learning(T, DataDir)
     
     cd(".\Learning\")
-    mkdir(CurDir, DataDir) % 새 폴더 생성
+    CurDir2=pwd;
+    mkdir(CurDir2,DataDir) % 새 폴더 생성
     addpath(DataDir)
     filename_BFI = strcat('\',DataDir,'-BFIdata');
     filename_PPG = strcat('\',DataDir,'-PPGdata');
-    writetable(T, [CurDir '/' DataDir filename_BFI '.csv'])
-    writetable(T, [CurDir '/' DataDir filename_PPG '.csv'])
+    writetable(T, [CurDir2 '/' DataDir filename_BFI '.csv'])
+    writetable(T, [CurDir2 '/' DataDir filename_PPG '.csv'])
+    prompt = {'Enter a value of \glucose (mg/dL)'};
+    dlgtitle = 'Glucose concentration';
+    dims = [1 40];
+    definput = {'0'};
+    opts.Interpreter = 'tex';
+    answer = inputdlg(prompt,dlgtitle,dims,definput,opts);
+    filename_glucose = strcat('\',DataDir,'-glucose');
+    answer=cell2table(answer);
+    writetable(answer, [CurDir2 '/' DataDir filename_glucose '.csv'])
     cd ..
 
 end
