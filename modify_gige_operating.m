@@ -1,4 +1,4 @@
-%function modify_gige_operating()
+function modify_gige_operating()
     
     clc;
     clear;
@@ -372,7 +372,9 @@
     close(h4)
     close(h2)
     close(h0) 
+    
+    BFI_data=table(meanBFI);
+    PPG_data=table(meanPPG);
+    Learning(BFI_data,PPG_data, DataDir)
 
-    Learning(T, DataDir)
-
-%end
+end

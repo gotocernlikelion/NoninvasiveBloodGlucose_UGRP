@@ -1,4 +1,4 @@
-function findNIRS()
+%function findNIRS_modified()
 %% get BFI/PPG data
     
     clear, close, clc
@@ -24,8 +24,8 @@ function findNIRS()
    
     wavelength=["660";"785";"808";"830"];
     mu_s_prime=[16.8;12.8;12.3;11.8];
-    %              glucose         Hb   HbO2
-    e=array2table([0.01515,3227.0,319.6;0.00856,977.04,735.4;0.00856,733.7,840.0;0.00725,693.0,974.0],"VariableNames",["glucose","Hb","HbO2"]);
+    %              glucose  Hb    HbO2
+    e=array2table([0.001515,3227.0,319.6;0.0856,997.04,735.4;0.0856,733.7,840.0;0.0725,693.0,974.0],"VariableNames",["glucose","Hb","HbO2"]);
     var_table=table(wavelength,mu_s_prime,e);
   
     row = 1;
@@ -38,9 +38,14 @@ function findNIRS()
 
     mu_s_prime_matrix = [var_table.mu_s_prime(4);var_table.mu_s_prime(2);var_table.mu_s_prime(3)];
     
-    real_glucose_rate=4.7;
+    %M(mol/L)
+    real_glucose_rate=5.43*10^(-3); 
+    real_Hb_rate=4.65419*10;
+    real_HbO2_rate=2.27604*10^(3);
 
-    mu_a_matrix =[e_matrix(1,1)*real_glucose_rate;e_matrix(2,1)*real_glucose_rate;e_matrix(3,1)*real_glucose_rate;
+    mu_a_matrix =[e_matrix(1,1)*real_glucose_rate+e_matrix(1,2)*real_Hb_rate+e_matrix(1,3)*real_HbO2_rate; 
+                  e_matrix(1,1)*real_glucose_rate+e_matrix(2,2)*real_Hb_rate+e_matrix(2,3)*real_HbO2_rate;
+                  e_matrix(3,1)*real_glucose_rate+e_matrix(3,2)*real_Hb_rate+e_matrix(3,3)*real_HbO2_rate];
 
     
 %% get I_0
@@ -48,6 +53,8 @@ function findNIRS()
     rho=1;
     temp=mu_a_matrix.*mu_s_prime_matrix';
     coe_term = ((rho^2)*sqrt(3)*temp)./(2*((rho)*sqrt(temp)+1));
+    
+    DPF=(rho*sqrt(3*mu_s_prime_matrix).*sqrt(mu_s_prime_matrix.*mu_a_matrix))./(2*sqrt(mu_a_matrix).*(rho*sqrt(mu_s_prime_matrix.*mu_a_matrix)+1));
 
     I=zeros(num,hgt);
     for i=1:3
@@ -76,38 +83,14 @@ function findNIRS()
 
     % get concentration
     concentration = e_matrix\mu_a_matrix';
-    concentration = (concentration*10^(-5))';
-    concentration=smoothdata(concentration,"movmean",60);
+    concentration = (concentration)';
+    concentration=concentration/1.80156;
+    %concentration=smoothdata(concentration,"movmean",60);
     t=0:1/60:60;
 
     plot(t(1:num),concentration)
     xlabel('time(s)')
     ylabel('concentration(mg/dl)')
     
-    cd .\..
-end
+%end
 
-function raw_data=getPPG()
-%% get BFI/PPG data
-    clear, close, clc
-    
-    cd(".\Data\")
-    currentFolder = pwd;
-    MyData=uigetdir();
-    cd(MyData)
-    mat_file=dir ('*-PPGdata.mat');
-    
-    if isempty(mat_file)
-        return
-    end
-    
-    num = 3600;
-    
-    load(mat_file.name);
-    hgt=size(meanPPG,2);
-    raw_data=zeros(num,hgt);
-    for i=1:hgt
-        raw_data(:,i)=meanPPG(:,i);       
-    end
-    cd(currentFolder)
-end

@@ -1,4 +1,4 @@
-function Learning(BFI_data,PPG_data, DataDir)
+%function Learning(BFI_data,PPG_data, DataDir)
     
     cd(".\Learning\")
     CurDir2=pwd;
@@ -19,4 +19,4 @@ function Learning(BFI_data,PPG_data, DataDir)
     writetable(answer, [CurDir2 '/' DataDir filename_glucose '.csv'])
     cd ..
 
-end
+%end

@@ -4,8 +4,8 @@ function findNIRS()
     clear, close, clc
     
     currentFolder = pwd;
-    cd("C:\Users\user\UGRP\NoninvasiveBloodGlucose_UGRP\Data\14-Nov-2023-reference_rts_785_808_830\")
-    mat_file='14-Nov-2023-reference_rts_785_808_830-PPGdata';
+    cd("C:\Users\user\UGRP\NoninvasiveBloodGlucose_UGRP\Data\06-Nov-2023-RTS_808_785_830_glucose")
+    mat_file='06-Nov-2023-RTS_808_785_830_glucose-PPGdata';
 
     load(mat_file)
     num=size(meanPPG,1);
@@ -38,9 +38,9 @@ function findNIRS()
 
     mu_s_prime_matrix = [var_table.mu_s_prime(4);var_table.mu_s_prime(2);var_table.mu_s_prime(3)];
     
-    real_glucose_rate=4.7;
+    real_glucose_rate=86/180;
 
-    mu_a_matrix =[e_matrix(1,1)*real_glucose_rate;e_matrix(2,1)*real_glucose_rate;e_matrix(3,1)*real_glucose_rate;
+    mu_a_matrix =[e_matrix(1,1)*real_glucose_rate;e_matrix(2,1)*real_glucose_rate*10^(-5);e_matrix(3,1)*real_glucose_rate*10^(-5)];
 
     
 %% get I_0
